@@ -40,7 +40,7 @@ POE_VERSION = '1.0.1c'
 # Configuration for itemalerter
 
 # Debug settings
-DEBUG = False
+DEBUG = True
 DEBUG_ALL = False
 
 # Steam or standalone version of Path of Exile
@@ -53,7 +53,10 @@ ALERT_SPECIALGEMS = True
 ALERT_MAPS = True
 ALERT_CURR = True
 ALERT_JEW_VALUES = True
-ALERT_RACE = True
+ALERT_RACE = False
+ALERT_LOW_LV_ORB = True
+ALERT_ALL_RARES = True
+
 
 # wip
 #SHOW_OWN_ITEMS_ONLY = True
@@ -83,9 +86,9 @@ SOUND_scour = True
 SOUND_alc = True
 SOUND_fuse = True
 SOUND_chis = True
-SOUND_chance = False
-SOUND_jew = False
-SOUND_glass = False
+SOUND_chance = True
+SOUND_jew = True
+SOUND_glass = True
 SOUND_mirror = True
 
 #uniques
@@ -165,6 +168,10 @@ class PlaySoundSuperiorGem(threading.Thread):
 class PlaySoundSuperiorFlask(threading.Thread):
     def run(self):
         winsound.PlaySound(r'sounds\superiorflask.wav', winsound.SND_FILENAME)
+
+class PlaySoundRare(threading.Thread):
+    def run(self):
+        winsound.PlaySound(r'sounds\dong.wav', winsound.SND_FILENAME)
         
 class SoundPlayer(threading.Thread):
     def run(self, sound):
@@ -175,9 +182,9 @@ class ItemAlert(object):
 
     if not STEAM:
 
-        BP0 = 0x0025c949 + 0x00400000
-        BP1 = 0x0025c941 + 0x00400000
-        BP2 = 0x0025c98b + 0x00400000
+        BP0 = 0x00269ee9 + 0x00400000
+        BP1 = 0x00269ee1 + 0x00400000
+        BP2 = 0x00269f2b + 0x00400000
 
     else:
     
@@ -194,9 +201,9 @@ class ItemAlert(object):
     #BP2 = 0x0025D80B  + 0x00400000
 
     # 1.0.1c 
-    #BP0 = 0x0025c949 + 0x00400000
-    #BP1 = 0x0025c941 + 0x00400000
-    #BP2 = 0x0025c98b + 0x00400000
+    #BP0 = 0x00269ee9 + 0x00400000
+    #BP1 = 0x00269ee1 + 0x00400000
+    #BP2 = 0x00269f2b + 0x00400000
     
     # 1.0.1a and 1.0.1b
     #BP0 = 0x0025b6a9 + 0x00400000
@@ -403,7 +410,7 @@ class ItemAlert(object):
 
             if isCurrencyItem(itemName):
             
-                if itemId !=0x50880BAF and itemId != 0x4F2B00ED: 
+                if itemId !=0x00000000 and itemId != 0x00000001: 
                     print Fore.WHITE + str.format('CUR: {0}',itemName)
                     number_of_orbs += 1
 
@@ -450,6 +457,24 @@ class ItemAlert(object):
                         crafting_drop = PlaySoundCraftingItem()
                         crafting_drop.start()
                     if itemId == 0xDD74C4BF and SOUND_glass == True: # Glassblower's Bauble
+                        crafting_drop = PlaySoundCraftingItem()
+                        crafting_drop.start()
+                    if itemId == 0x4E6C4D33 and ALERT_LOW_LV_ORB == True: # Orb of Transmutation
+                        crafting_drop = PlaySoundCraftingItem()
+                        crafting_drop.start()
+                    if itemId == 0x44D39F63 and ALERT_LOW_LV_ORB == True: # Blacksmith's Whetstone
+                        crafting_drop = PlaySoundCraftingItem()
+                        crafting_drop.start()
+                    if itemId == 0xFC044D9D and ALERT_LOW_LV_ORB == True: # Armourer's Scrap
+                        crafting_drop = PlaySoundCraftingItem()
+                        crafting_drop.start()
+                    if itemId == 0xD7328257 and ALERT_LOW_LV_ORB == True: # Orb of Alteration
+                        crafting_drop = PlaySoundCraftingItem()
+                        crafting_drop.start()
+                    if itemId == 0x1C1E192B and ALERT_LOW_LV_ORB == True: # Chromatic Orb
+                        crafting_drop = PlaySoundCraftingItem()
+                        crafting_drop.start()
+                    if itemId == 0xF5BB66E2 and ALERT_LOW_LV_ORB == True: # Orb of Augmentation
                         crafting_drop = PlaySoundCraftingItem()
                         crafting_drop.start()
                     if itemId == 0x79C23B15 and SOUND_mirror == True: # Mirror of Kalandra
@@ -554,6 +579,9 @@ class ItemAlert(object):
                 elif rarity == 2 and ALERT_RARES == True:
                 
                     print Style.BRIGHT + Fore.YELLOW + str.format('BELT: {0}, rarity: {1}, itemlevel: {2}',itemName,rarity,itemlevel)
+                    if ALERT_ALL_RARES == True:
+                        crafting_drop = PlaySoundRare()
+                        crafting_drop.start()
 
                 print >>self.logFile, '---------------------------------'
                 
@@ -573,6 +601,9 @@ class ItemAlert(object):
                 elif rarity == 2 and ALERT_RARES == True:
                 
                     print Style.BRIGHT + Fore.YELLOW + str.format('QUIV: {0}, rarity: {1}, itemlevel: {2}',itemName,rarity,itemlevel)
+                    if ALERT_ALL_RARES == True:
+                        crafting_drop = PlaySoundRare()
+                        crafting_drop.start()
 
                 print >>self.logFile, '---------------------------------'
                 
@@ -583,6 +614,9 @@ class ItemAlert(object):
                 if rarity == 2 and ALERT_RARES == True:
                     print Style.BRIGHT + Fore.YELLOW + str.format('JEW: {0}, rarity: {1}',itemName,rarity)
                     number_of_rares += 1
+                    if ALERT_ALL_RARES == True:
+                        crafting_drop = PlaySoundRare()
+                        crafting_drop.start()
                     
                 if (rarity == 0 or rarity == 1) and (itemId == 0x29F77698 or itemId == 0xDE069771) and ALERT_JEW_VALUES == True:
 
@@ -652,6 +686,9 @@ class ItemAlert(object):
                         
                 elif rarity == 2:
                     number_of_rares += 1
+                    if ALERT_ALL_RARES == True:
+                        crafting_drop = PlaySoundRare()
+                        crafting_drop.start()                    
                 
                 if identified == 1:
 
@@ -989,7 +1026,8 @@ class ItemAlert(object):
                             sound.start()
                         
                 if rarity == 3:
-                    print >>self.logFile, 'UNIQUE !'                    number_of_uniques += 1
+                    print >>self.logFile, 'UNIQUE !'
+                    number_of_uniques += 1
                     
                     print Fore.YELLOW + str.format('UNI: {0}, rarity: {1}, ilvl: {2}, qual: {3}, sockets: {4}',itemName,rarity,itemlevel,quality, socketsetup)
                     
@@ -1000,6 +1038,8 @@ class ItemAlert(object):
                 if rarity == 2 and ALERT_RARES == True and rare_alerted == False:
                 
                     print Style.BRIGHT + Fore.YELLOW + str.format('RARE: {0}, rarity: {1}, itemlevel: {2}',itemName,rarity,itemlevel)
+                    if ALERT_ALL_RARES == True:
+                        crafting_drop.start()
                     
                     
                 print >>self.logFile, '---------------------------------'
